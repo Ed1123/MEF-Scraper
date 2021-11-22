@@ -29,7 +29,19 @@ class Mef1Spider(scrapy.Spider):
     start_urls = [get_url()]
 
     def parse(self, response):
+        row_headers = [
+            'Producto / Proyecto',
+            'PIA',
+            'PIM',
+            'Certificación',
+            'Compromiso Anual',
+            'Ejecución - Atención de Compromiso Mensual',
+            'Ejecución - Devengado',
+            'Ejecución - Girado',
+            'Avance %'
+        ]
         rows = response.xpath('//table[3]//tr')
         for row in rows:
             data = row.xpath('./td/text()').getall()
-            yield {'data': [d.strip() for d in data]}
+            data = [d.strip() for d in data]
+            yield {tittle: value for tittle, value in zip(row_headers, data)}
