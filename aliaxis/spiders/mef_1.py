@@ -1,6 +1,6 @@
 # %%
 import itertools
-from dataclasses import dataclass
+from datetime import date
 from urllib import parse
 
 import scrapy
@@ -34,6 +34,18 @@ class MinecoAPI:
 class Url:
     base_url = 'https://apps5.mineco.gob.pe/transparencia/mensual/Navegar_6.aspx'
 
+    nivel_gob = {
+        'E': 'Gobierno Nacional',
+        'M': 'Gobierno Local',
+        'R': 'Gobierno Regional'
+    }
+    departamentos = [
+        'Amazonas', 'Áncash', 'Apurímac', 'Arequipa', 'Ayacucho', 'Cajamarca', 'Callao', 'Cusco',
+        'Huancavelica', 'Huánuco', 'Ica', 'Junín', 'La Libertad', 'Lambayeque', 'Lima', 'Loreto',
+        'Madre de Dios', 'Moquegua', 'Pasco', 'Piura', 'Puno', 'San Martín', 'Tacna', 'Tumbes',
+        'Ucayali'
+    ]
+
     def __init__(self, cod_nivel_gobierno='E', cod_cat_presupuestal='0083', cod_departamento=None, mes=None, año=2021):
         self.cod_nivel_gobierno = cod_nivel_gobierno
         self.cod_cat_presupuestal = cod_cat_presupuestal
@@ -41,7 +53,7 @@ class Url:
         self.mes = mes
         self.año = año
 
-    def _get_params_dict(self):
+    def _get_params_str(self):
         params = {
             '_tgt': 'xls',  # File format
             '_uhc': 'yes',  # ?
@@ -61,7 +73,27 @@ class Url:
         return params
 
     def get(self):
-        return f'{self.base_url}?{self._get_params_dict()}'
+        return f'{self.base_url}?{self._get_params_str()}'
+
+    @property
+    def departamento(self):
+        if self.cod_departamento is None:
+            return
+        return self.departamentos[self.cod_departamento - 1]
+
+    @property
+    def month_date(self):
+        if self.mes is None:
+            return
+        return date(self.año, self.mes, 1)
+
+    def get_meta(self):
+        return {
+            'Nivel de Gobierno': self.nivel_gob[self.cod_nivel_gobierno],
+            'Categoría Presupuestal': self.cod_cat_presupuestal,
+            'Departamento': self.departamento,
+            'Mes': self.month_date
+        }
 
 
 # %%
@@ -73,7 +105,7 @@ class Mef1Spider(scrapy.Spider):
         mineco_api = MinecoAPI()
         urls = mineco_api.get_monthly_report_urls() + mineco_api.get_pia_pim_urls()
         for url in urls:
-            yield scrapy.Request(url=url.get())
+            yield scrapy.Request(url=url.get(), meta=url.get_meta())
 
     def parse(self, response):
         row_headers = [
@@ -91,4 +123,5 @@ class Mef1Spider(scrapy.Spider):
         for row in rows:
             data = row.xpath('./td/text()').getall()
             data = [d.strip() for d in data]
-            yield {tittle: value for tittle, value in zip(row_headers, data)}
+            item = {tittle: value for tittle, value in zip(row_headers, data)}
+            yield {**item, **response.meta}
