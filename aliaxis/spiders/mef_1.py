@@ -56,6 +56,12 @@ class Mef1Spider(scrapy.Spider):
     name = 'mef_1'
     start_urls = [MinecoAPI()._get_url()]
 
+    def start_requests(self):
+        mineco_api = MinecoAPI()
+        urls = mineco_api.get_monthly_report_urls() + mineco_api.get_pia_pim_urls()
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse)
+
     def parse(self, response):
         row_headers = [
             'Producto / Proyecto',
