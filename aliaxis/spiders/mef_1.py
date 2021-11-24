@@ -124,4 +124,6 @@ class Mef1Spider(scrapy.Spider):
             data = row.xpath('./td/text()').getall()
             data = [d.strip() for d in data]
             item = {tittle: value for tittle, value in zip(row_headers, data)}
-            yield {**item, **response.meta}
+            item = {**item, **response.meta}
+            item['CUI'] = item['Producto / Proyecto'][:8]
+            yield item
