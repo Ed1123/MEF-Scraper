@@ -99,7 +99,6 @@ class Url:
 # %%
 class Mef1Spider(scrapy.Spider):
     name = 'mef_1'
-    start_urls = [MinecoAPI()._get_url()]
 
     def start_requests(self):
         mineco_api = MinecoAPI()
