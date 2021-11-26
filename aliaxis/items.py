@@ -6,7 +6,14 @@
 import scrapy
 
 
-class AliaxisItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class MinecoItem(scrapy.Item):
+    name = scrapy.Field()
+    producto_proyecto = scrapy.Field()
+    pia = scrapy.Field()
+    pim = scrapy.Field()
+    certificación = scrapy.Field()
+    compromiso_anual = scrapy.Field()
+    ejecución_atención_compromiso_mensual = scrapy.Field()
+    ejecución_devengado = scrapy.Field()
+    ejecución_girado = scrapy.Field()
+    avance_porcentual  = scrapy.Field()
