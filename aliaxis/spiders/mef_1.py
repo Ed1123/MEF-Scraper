@@ -8,7 +8,13 @@ import scrapy
 
 class MinecoAPI:
     cod_niveles_gobierno = ['E', 'M', 'R']
-    cod_categorias_presupuestales = ['0083']
+    cod_categorias_presupuestales = {
+        '0082': 'PROGRAMA NACIONAL DE SANEAMIENTO URBANO',
+        '0083': 'PROGRAMA NACIONAL DE SANEAMIENTO RURAL',
+        '0042': 'APROVECHAMIENTO DE LOS RECURSOS HIDRICOS PARA USO AGRARIO',
+        '0138': 'REDUCCION DEL COSTO, TIEMPO E INSEGURIDAD EN EL SISTEMA DE TRANSPORTE',
+        '0148': 'REDUCCION DEL TIEMPO, INSEGURIDAD Y COSTO AMBIENTAL EN EL TRANSPORTE URBANO'
+    }
     cod_departamentos = range(1, 25)
     meses = range(1, 13)
 
