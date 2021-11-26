@@ -2,3 +2,4 @@ instructions
 __pycache__
 *.xls*
 *.csv
+test_runs
