@@ -1,9 +1,12 @@
-# %%
 import itertools
+import os
 from datetime import date
 from urllib import parse
 
 import scrapy
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class MinecoAPI:
@@ -102,13 +105,14 @@ class Url:
         }
 
 
-# %%
 class Mef1Spider(scrapy.Spider):
     name = 'mef_1'
 
     def start_requests(self):
         mineco_api = MinecoAPI()
         urls = mineco_api.get_monthly_report_urls() + mineco_api.get_pia_pim_urls()
+        if os.getenv('TEST_MODE') == 'True':
+            urls = [Url(mes=1)]
         for url in urls:
             yield scrapy.Request(url=url.get(), meta=url.get_meta())
 
