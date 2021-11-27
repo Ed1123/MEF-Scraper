@@ -129,6 +129,10 @@ class Mef1Spider(scrapy.Spider):
             data = row.xpath('./td/text()').getall()
             data = [d.strip() for d in data]
             item = {tittle: value for tittle, value in zip(row_headers, data)}
-            item = {**item, **response.meta}
-            item['CUI'] = item['Producto / Proyecto'][:8]
+            meta = {
+                k: v for k, v in response.meta.items()
+                if k not in ['download_timeout', 'download_slot', 'download_latency', 'depth']
+            }
+            item = {**item, **meta}
+            item['CUI'] = item['Producto / Proyecto'][:7]
             yield item
