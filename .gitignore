@@ -2,4 +2,4 @@ instructions
 __pycache__
 *.xls*
 *.csv
-test_runs
+mef_1_output
