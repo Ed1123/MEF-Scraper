@@ -3,3 +3,4 @@ __pycache__
 *.xls*
 *.csv
 mef_1_output
+.env
