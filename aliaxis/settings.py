@@ -94,13 +94,13 @@ ROBOTSTXT_OBEY = False
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # AWS S3
-aws_key = os.getenv('AWS_KEY')
-aws_secret = os.getenv('AWS_SECRET')
-aws_bucket = os.getenv('AWS_BUCKET')
+# aws_key = os.getenv('AWS_KEY')
+# aws_secret = os.getenv('AWS_SECRET')
+# aws_bucket = os.getenv('AWS_BUCKET')
 FEEDS = {
-    f's3://{aws_key}:{aws_secret}@{aws_bucket}/mef_1_output/%(time)s.csv': {
-        'format': 'csv',
-    },
+    # f's3://{aws_key}:{aws_secret}@{aws_bucket}/mef_1_output/%(time)s.csv': {
+    #     'format': 'csv',
+    # },
     'mef_1_output/%(time)s.csv': {
         'format': 'csv',
     }
