@@ -9,9 +9,9 @@
 
 import os
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-load_dotenv()
+load_dotenv(find_dotenv(usecwd=True)) # To fix path error when eggyfing
 
 BOT_NAME = 'aliaxis'
 
