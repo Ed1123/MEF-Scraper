@@ -11,13 +11,17 @@ load_dotenv(find_dotenv(usecwd=True)) # To fix path error when eggyfing
 
 class MinecoAPI:
     cod_niveles_gobierno = ['E', 'M', 'R']
-    cod_categorias_presupuestales = {
-        '0082': 'PROGRAMA NACIONAL DE SANEAMIENTO URBANO',
-        '0083': 'PROGRAMA NACIONAL DE SANEAMIENTO RURAL',
-        '0042': 'APROVECHAMIENTO DE LOS RECURSOS HIDRICOS PARA USO AGRARIO',
-        '0138': 'REDUCCION DEL COSTO, TIEMPO E INSEGURIDAD EN EL SISTEMA DE TRANSPORTE',
-        '0148': 'REDUCCION DEL TIEMPO, INSEGURIDAD Y COSTO AMBIENTAL EN EL TRANSPORTE URBANO'
-    }
+    cod_categorias_presupuestales = [
+        '0001', '0002', '0016', '0017', '0018', '0024', '0030', '0031', '0032', '0036',
+        '0039', '0040', '0041', '0042', '0046', '0047', '0048', '0049', '0051', '0057',
+        '0058', '0062', '0065', '0066', '0067', '0068', '0072', '0073', '0074', '0079',
+        '0080', '0082', '0083', '0086', '0087', '0089', '0090', '0093', '0094', '0095',
+        '0096', '0097', '0099', '0101', '0103', '0104', '0106', '0107', '0109', '0110',
+        '0111', '0113', '0114', '0115', '0116', '0117', '0118', '0119', '0120', '0121',
+        '0122', '0123', '0124', '0125', '0126', '0127', '0128', '0129', '0130', '0131',
+        '0132', '0133', '0134', '0135', '0137', '0138', '0139', '0140', '0141', '0142',
+        '0143', '0144', '0145', '0146', '0147', '0148', '0149', '0150', '1001', '1002'
+    ]
     cod_departamentos = range(1, 25)
     meses = range(1, 13)
 
