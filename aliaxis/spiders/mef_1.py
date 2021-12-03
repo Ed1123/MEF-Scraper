@@ -6,7 +6,7 @@ from urllib import parse
 import scrapy
 from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(find_dotenv(usecwd=True)) # To fix path error when eggyfing
+load_dotenv(find_dotenv(usecwd=True))  # To fix path error when eggyfing
 
 
 class MinecoAPI:
