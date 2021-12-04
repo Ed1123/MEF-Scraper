@@ -17,10 +17,10 @@ pip install -r requirements.txt
 
 ## Usage
 To use it simply run the following in the project directory:
+```bash
+scrapy crawl <spider_name> # either mef_1 or mef_2
 ```
-scrapy crawl mef_1
-```
-The results will be save in a folder called `mef_1_output`.
+The results will be save in a folder called `output/<spider_name>`.
 
 ### Upload to S3
 To store the results in a S3 bucket add the following environment variables with the corresponding data:
@@ -38,10 +38,10 @@ aws_key = os.getenv('AWS_KEY')
 aws_secret = os.getenv('AWS_SECRET')
 aws_bucket = os.getenv('AWS_BUCKET')
 FEEDS = {
-    f's3://{aws_key}:{aws_secret}@{aws_bucket}/mef_1_output/%(time)s.pickle': {
+    f's3://{aws_key}:{aws_secret}@{aws_bucket}/{FILEPATH}.pickle': {
         'format': 'pickle',
     },
-    'mef_1_output/%(time)s.csv': {
+    f'{FILEPATH}.csv': {
         'format': 'csv',
     }
 }
