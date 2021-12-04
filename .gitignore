@@ -2,5 +2,5 @@ instructions
 __pycache__
 *.xls*
 *.csv
-mef_1_output
+output
 .env

@@ -97,11 +97,12 @@ ROBOTSTXT_OBEY = False
 # aws_key = os.getenv('AWS_KEY')
 # aws_secret = os.getenv('AWS_SECRET')
 # aws_bucket = os.getenv('AWS_BUCKET')
+filepath = 'output/%(name)s/%(time)s'
 FEEDS = {
-    # f's3://{aws_key}:{aws_secret}@{aws_bucket}/mef_1_output/%(time)s.pickle': {
+    # f's3://{aws_key}:{aws_secret}@{aws_bucket}/{filepath}.pickle': {
     #     'format': 'pickle',
     # },
-    'mef_1_output/%(time)s.csv': {
+    f'{filepath}.csv': {
         'format': 'csv',
     }
 }
