@@ -7,7 +7,7 @@ class Mef2Spider(scrapy.Spider):
         'https://apps5.mineco.gob.pe/bingos/seguimiento_pi/Navegador/default.aspx']
     start_urls = [
         'https://apps5.mineco.gob.pe/bingos/seguimiento_pi/Navegador/Navegar_2.aspx?'
-        '_tgt=xls&_uhc=yes&0=&31=&y=2021&cpage=1&psize=10'
+        '_tgt=xls&_uhc=yes&0=&31=&y=2021&cpage=1&psize=1000000'
     ]
 
     def parse(self, response):
