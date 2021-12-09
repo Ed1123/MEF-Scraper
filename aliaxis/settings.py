@@ -97,16 +97,15 @@ FEED_EXPORTERS = {
     'xlsx': 'scrapy_xlsx.XlsxItemExporter',
 }
 
-FILEPATH = 'output/%(name)s/%(time)s'
 # AWS S3
 # aws_key = os.getenv('AWS_KEY')
 # aws_secret = os.getenv('AWS_SECRET')
 # aws_bucket = os.getenv('AWS_BUCKET')
 FEEDS = {
-    # f's3://{aws_key}:{aws_secret}@{aws_bucket}/{FILEPATH}.xlsx': {
+    # f's3://{aws_key}:{aws_secret}@{aws_bucket}/rpa_output/%(name)s/output/%(time)s.xlsx': {
     #     'format': 'xlsx',
     # },
-    f'{FILEPATH}.csv': {
+    f'output/%(name)s/%(time)s.csv': {
         'format': 'csv',
     },
 }
