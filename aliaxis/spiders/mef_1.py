@@ -1,6 +1,6 @@
 import itertools
 import os
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from urllib import parse
 
 import scrapy
@@ -15,7 +15,7 @@ def get_pia_pim_urls(cod_niveles_gobierno, cod_categorias_presupuestales):
 
 
 def get_monthly_report_urls(
-    cod_niveles_gobierno, cod_categorias_presupuestales, cod_departamentos, meses
+    cod_niveles_gobierno, cod_categorias_presupuestales, cod_departamentos, meses, años
 ):
     ### MAKE THIS METHOD A NEW MORE GENERAL ONE THAT GETS LISTS AS ARGUMENTS
     parameters = itertools.product(
@@ -23,6 +23,7 @@ def get_monthly_report_urls(
         cod_categorias_presupuestales,
         cod_departamentos,
         meses,
+        años,
     )
     return [Url(*args) for args in parameters]
 
@@ -90,7 +91,9 @@ class Url:
             'y': self.año,  # Año
             'ap': 'Proyecto',  # ?
             'cpage': '1',  # Página
-            'psize': '1000000',  # Records per page
+            'psize': '1000000'
+            if os.getenv('TEST_MODE') != 'True'
+            else '1',  # Records per page
         }
         params = {k: v for k, v in params.items() if v is not None}
         params = parse.urlencode(params)
@@ -125,18 +128,36 @@ class Mef1Spider(scrapy.Spider):
 
     def start_requests(self):
         date = self.get_month_year()
-        urls = get_monthly_report_urls() + get_pia_pim_urls()
-        if os.getenv('TEST_MODE') == 'True':
-            urls = [Url(mes=1)]
+        urls = get_monthly_report_urls(
+            self.get_setting('COD_NIVELES_GOBIERNO'),
+            self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
+            range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
+            [date.month],
+            [date.year],
+        ) + get_pia_pim_urls(
+            self.get_setting('COD_NIVELES_GOBIERNO'),
+            self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
+        )
+        # if os.getenv('TEST_MODE') == 'True':
+        #     urls = [Url(mes=1)]
         for url in urls:
             yield scrapy.Request(url=url.get(), meta=url.get_meta())
 
     def get_month_year(self):
-        if not self.year:
-            year = datetime.now().year
-        if not self.month:
-            month = datetime.now().month
-        return datetime(year, month, 1)
+        if 'year' not in self.__dict__ and 'month' not in self.__dict__:
+            # Taking the month before if no args were provided
+            return datetime.now().replace(day=1) - timedelta(days=1)
+        else:
+            # If one or more args were provided take them
+            year = (
+                datetime.now().year if 'year' not in self.__dict__ else int(self.year)
+            )
+            month = (
+                datetime.now().month
+                if 'month' not in self.__dict__
+                else int(self.month)
+            )
+            return datetime(year, month, 1)
 
     def parse(self, response):
         row_headers = [
@@ -169,3 +190,6 @@ class Mef1Spider(scrapy.Spider):
             item = {**item, **meta}
             item['CUI'] = item['Producto / Proyecto'][:7]
             yield item
+
+    def get_setting(self, setting_name):
+        return self.settings.attributes.get(setting_name).value
