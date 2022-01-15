@@ -22,6 +22,12 @@ scrapy crawl <spider_name> # either mef_1 or mef_2
 ```
 The results will be save in a folder called `output/<spider_name>`.
 
+__Note:__ By default the mef_1 spider will take the month before. If you want to process a list of other dates you will have to provide a month and/or a year as an argument as follows:
+```bash
+scrapy crawl mef_1 -a month=1 -a year=2021
+```
+If only one is provided, the code will take the current one.
+
 ### Upload to S3
 To store the results in a S3 bucket add the following environment variables with the corresponding data:
 ```
