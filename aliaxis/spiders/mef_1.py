@@ -224,16 +224,20 @@ class Mef1Spider(scrapy.Spider):
     name = 'mef_1'
 
     def start_requests(self):
-        if self.mes:
-            pass
-        else:
-            mes = datetime.now().month
+        date = self.get_month_year()
         mineco_api = MinecoAPI()
         urls = mineco_api.get_monthly_report_urls() + mineco_api.get_pia_pim_urls()
         if os.getenv('TEST_MODE') == 'True':
             urls = [Url(mes=1)]
         for url in urls:
             yield scrapy.Request(url=url.get(), meta=url.get_meta())
+
+    def get_month_year(self):
+        if not self.year:
+            year = datetime.now().year
+        if not self.month:
+            month = datetime.now().month
+        return datetime(year, month, 1)
 
     def parse(self, response):
         row_headers = [
