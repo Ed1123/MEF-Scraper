@@ -9,122 +9,22 @@ from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv(usecwd=True))  # To fix path error when eggyfing
 
 
-class MinecoAPI:
-    cod_niveles_gobierno = ['E', 'M', 'R']
-    cod_categorias_presupuestales = [
-        '0001',
-        '0002',
-        '0016',
-        '0017',
-        '0018',
-        '0024',
-        '0030',
-        '0031',
-        '0032',
-        '0036',
-        '0039',
-        '0040',
-        '0041',
-        '0042',
-        '0046',
-        '0047',
-        '0048',
-        '0049',
-        '0051',
-        '0057',
-        '0058',
-        '0062',
-        '0065',
-        '0066',
-        '0067',
-        '0068',
-        '0072',
-        '0073',
-        '0074',
-        '0079',
-        '0080',
-        '0082',
-        '0083',
-        '0086',
-        '0087',
-        '0089',
-        '0090',
-        '0093',
-        '0094',
-        '0095',
-        '0096',
-        '0097',
-        '0099',
-        '0101',
-        '0103',
-        '0104',
-        '0106',
-        '0107',
-        '0109',
-        '0110',
-        '0111',
-        '0113',
-        '0114',
-        '0115',
-        '0116',
-        '0117',
-        '0118',
-        '0119',
-        '0120',
-        '0121',
-        '0122',
-        '0123',
-        '0124',
-        '0125',
-        '0126',
-        '0127',
-        '0128',
-        '0129',
-        '0130',
-        '0131',
-        '0132',
-        '0133',
-        '0134',
-        '0135',
-        '0137',
-        '0138',
-        '0139',
-        '0140',
-        '0141',
-        '0142',
-        '0143',
-        '0144',
-        '0145',
-        '0146',
-        '0147',
-        '0148',
-        '0149',
-        '0150',
-        '1001',
-        '1002',
-    ]
-    cod_departamentos = range(1, 25)
-    meses = range(1, 13)
+def get_pia_pim_urls(cod_niveles_gobierno, cod_categorias_presupuestales):
+    parameters = itertools.product(cod_niveles_gobierno, cod_categorias_presupuestales)
+    return [Url(cod_nivel_gobierno=i, cod_cat_presupuestal=j) for i, j in parameters]
 
-    def get_pia_pim_urls(self):
-        parameters = itertools.product(
-            self.cod_niveles_gobierno, self.cod_categorias_presupuestales
-        )
 
-        return [
-            Url(cod_nivel_gobierno=i, cod_cat_presupuestal=j) for i, j in parameters
-        ]
-
-    def get_monthly_report_urls(self):
-        ### MAKE THIS METHOD A NEW MORE GENERAL ONE THAT GETS LISTS AS ARGUMENTS
-        parameters = itertools.product(
-            self.cod_niveles_gobierno,
-            self.cod_categorias_presupuestales,
-            self.cod_departamentos,
-            self.meses,
-        )
-
-        return [Url(*args) for args in parameters]
+def get_monthly_report_urls(
+    cod_niveles_gobierno, cod_categorias_presupuestales, cod_departamentos, meses
+):
+    ### MAKE THIS METHOD A NEW MORE GENERAL ONE THAT GETS LISTS AS ARGUMENTS
+    parameters = itertools.product(
+        cod_niveles_gobierno,
+        cod_categorias_presupuestales,
+        cod_departamentos,
+        meses,
+    )
+    return [Url(*args) for args in parameters]
 
 
 class Url:
@@ -225,8 +125,7 @@ class Mef1Spider(scrapy.Spider):
 
     def start_requests(self):
         date = self.get_month_year()
-        mineco_api = MinecoAPI()
-        urls = mineco_api.get_monthly_report_urls() + mineco_api.get_pia_pim_urls()
+        urls = get_monthly_report_urls() + get_pia_pim_urls()
         if os.getenv('TEST_MODE') == 'True':
             urls = [Url(mes=1)]
         for url in urls:

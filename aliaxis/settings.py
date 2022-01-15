@@ -93,6 +93,15 @@ ROBOTSTXT_OBEY = False
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+# List of departamentos and categorías presupuestales
+COD_NIVELES_GOBIERNO = ['E', 'M', 'R']
+MESES = range(1, 13)
+with open('departamentos', 'r') as f:
+    DEPARTAMENTOS = f.readlines()
+with open('categorías_presupuestales', 'r') as f:
+    COD_CATEGORÍAS_PRESUPUESTALES = f.readlines()
+
+# Export the file to Excel format
 FEED_EXPORTERS = {
     'xlsx': 'scrapy_xlsx.XlsxItemExporter',
 }
