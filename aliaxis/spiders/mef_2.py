@@ -3,10 +3,17 @@ import scrapy
 
 class Mef2Spider(scrapy.Spider):
     name = 'mef_2'
-    start_urls = [
-        'https://apps5.mineco.gob.pe/bingos/seguimiento_pi/Navegador/Navegar_2.aspx?'
-        '_tgt=xls&_uhc=yes&0=&33=&y=2022&cpage=1&psize=1000000'
-    ]
+
+    def __init__(self, *args, **kwargs):
+        super(Mef2Spider, self).__init__(*args, **kwargs)
+
+        if 'urls' in kwargs:
+            self.start_urls = kwargs.get('urls').split(',')
+        else:
+            self.start_urls = [
+                'https://apps5.mineco.gob.pe/bingos/seguimiento_pi/Navegador/Navegar_2.aspx?'
+                '_tgt=xls&_uhc=yes&0=&33=&y=2022&cpage=1&psize=1000000'
+            ]
 
     def parse(self, response):
         i = self.start_urls[0].find('&y=')
