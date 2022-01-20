@@ -17,7 +17,6 @@ def get_pia_pim_urls(cod_niveles_gobierno, cod_categorias_presupuestales):
 def get_monthly_report_urls(
     cod_niveles_gobierno, cod_categorias_presupuestales, cod_departamentos, meses, años
 ):
-    ### MAKE THIS METHOD A NEW MORE GENERAL ONE THAT GETS LISTS AS ARGUMENTS
     parameters = itertools.product(
         cod_niveles_gobierno,
         cod_categorias_presupuestales,
@@ -67,7 +66,7 @@ class Url:
     def __init__(
         self,
         cod_nivel_gobierno='E',
-        cod_cat_presupuestal='0083',
+        cod_cat_presupuestal='0082',
         cod_departamento=None,
         mes=None,
         año=2021,
@@ -85,7 +84,7 @@ class Url:
             '0': '',  # ?
             '1': self.cod_nivel_gobierno,  # Nivel de Gobierno
             '30': self.cod_cat_presupuestal,  # Categoría Presupuestal
-            '21': self.cod_departamento,  # Departamento
+            '21': f'{self.cod_departamento:02d}',  # Departamento
             '23': self.mes,  # Mes
             '31': '',  # ?
             'y': self.año,  # Año
@@ -132,7 +131,8 @@ class Mef1Spider(scrapy.Spider):
             self.get_setting('COD_NIVELES_GOBIERNO'),
             self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
             range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
-            [date.month],
+            # [date.month],
+            range(1, 13),  # Temp for getting all historic data
             [date.year],
         ) + get_pia_pim_urls(
             self.get_setting('COD_NIVELES_GOBIERNO'),
