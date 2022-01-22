@@ -84,7 +84,9 @@ class Url:
             '0': '',  # ?
             '1': self.cod_nivel_gobierno,  # Nivel de Gobierno
             '30': self.cod_cat_presupuestal,  # Categoría Presupuestal
-            '21': f'{self.cod_departamento:02d}',  # Departamento
+            '21': f'{self.cod_departamento:02d}'
+            if self.cod_departamento
+            else None,  # Departamento
             '23': self.mes,  # Mes
             '31': '',  # ?
             'y': self.año,  # Año
