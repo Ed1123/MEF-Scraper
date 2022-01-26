@@ -134,7 +134,14 @@ class Mef1Spider(scrapy.Spider):
 
     def start_requests(self):
         date = self.get_month_year()
-        urls = get_pia_pim_urls(
+        urls = get_monthly_report_urls(
+            self.get_setting('COD_NIVELES_GOBIERNO'),
+            self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
+            range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
+            # [date.month],
+            range(1, 13),  # Temp for getting all historic data
+            [date.year],
+        ) + get_pia_pim_urls(
             self.get_setting('COD_NIVELES_GOBIERNO'),
             self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
             [date.year],
