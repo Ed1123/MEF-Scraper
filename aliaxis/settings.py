@@ -95,9 +95,9 @@ ROBOTSTXT_OBEY = False
 
 # List of departamentos and categorías presupuestales
 COD_NIVELES_GOBIERNO = ['E', 'M', 'R']
-with open('aliaxis/cod_categorias_presupuestales', 'r') as f:
+with open('aliaxis/cod_categorias_presupuestales', 'r', encoding='utf-8') as f:
     COD_CATEGORÍAS_PRESUPUESTALES = f.read().splitlines()
-with open('aliaxis/departamentos', 'r') as f:
+with open('aliaxis/departamentos', 'r', encoding='utf-8') as f:
     DEPARTAMENTOS = f.read().splitlines()
 MESES = range(1, 13)
 
