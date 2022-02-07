@@ -9,13 +9,13 @@ from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv(usecwd=True))  # To fix path error when eggyfing
 
 
-def get_pia_pim_urls(cod_niveles_gobierno, cod_categorias_presupuestales, años):
+def get_pia_pim_urls(cod_niveles_gobierno, cod_categorias_presupuestales, meses, años):
     parameters = itertools.product(
-        cod_niveles_gobierno, cod_categorias_presupuestales, años
+        cod_niveles_gobierno, cod_categorias_presupuestales, meses, años
     )
     return [
-        Url(cod_nivel_gobierno=i, cod_cat_presupuestal=j, año=k)
-        for i, j, k in parameters
+        Url(cod_nivel_gobierno=i, cod_cat_presupuestal=j, cod_departamento=k, año=l)
+        for i, j, k, l in parameters
     ]
 
 
@@ -138,12 +138,13 @@ class Mef1Spider(scrapy.Spider):
             self.get_setting('COD_NIVELES_GOBIERNO'),
             self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
             range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
-            # [date.month],
-            range(1, 13),  # Temp for getting all historic data
+            [date.month],
+            # range(1, 13),  # Temp for getting all historic data
             [date.year],
         ) + get_pia_pim_urls(
             self.get_setting('COD_NIVELES_GOBIERNO'),
             self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
+            range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
             [date.year],
         )
         # if os.getenv('TEST_MODE') == 'True':
