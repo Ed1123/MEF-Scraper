@@ -1,5 +1,6 @@
 import itertools
 import os
+from collections import namedtuple
 from datetime import date, datetime, timedelta
 from urllib import parse
 
@@ -129,44 +130,52 @@ class Url:
         }
 
 
+MonthsYears = namedtuple('Date', ['months', 'years'])
+
+
 class Mef1Spider(scrapy.Spider):
     name = 'mef_1'
 
     def start_requests(self):
-        date = self.get_month_year()
+        months_years = self.get_month_year()
         urls = get_monthly_report_urls(
             self.get_setting('COD_NIVELES_GOBIERNO'),
             self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
             range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
-            [date.month],
-            # range(1, 13),  # Temp for getting all historic data
-            [date.year],
+            months_years.months,
+            months_years.years,
         ) + get_pia_pim_urls(
             self.get_setting('COD_NIVELES_GOBIERNO'),
             self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
             range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
-            [date.year],
+            months_years.years,
         )
         # if os.getenv('TEST_MODE') == 'True':
         #     urls = [Url(mes=1)]
         for url in urls:
             yield scrapy.Request(url=url.get(), meta=url.get_meta())
 
-    def get_month_year(self):
+    def get_month_year(self) -> MonthsYears:
+        prev_month_date = datetime.now().replace(day=1) - timedelta(days=1)
         if 'year' not in self.__dict__ and 'month' not in self.__dict__:
             # Taking the month before if no args were provided
-            return datetime.now().replace(day=1) - timedelta(days=1)
+            months = [prev_month_date.month]
+            years = [prev_month_date.year]
+        elif 'year' in self.__dict__ and (
+            'month' not in self.__dict__ or self.month == 'all'
+        ):
+            # Extract historic data (all months)
+            months = range(1, 12)
+            years = map(int, self.year.split(','))
+        elif 'year' not in self.__dict__ and 'month' in self.__dict__:
+            # Month in current year if not year provided
+            months = map(int, self.month.split(','))
+            years = [prev_month_date.year]
         else:
-            # If one or more args were provided take them
-            year = (
-                datetime.now().year if 'year' not in self.__dict__ else int(self.year)
-            )
-            month = (
-                datetime.now().month
-                if 'month' not in self.__dict__
-                else int(self.month)
-            )
-            return datetime(year, month, 1)
+            months = map(int, self.month.split(','))
+            years = map(int, self.year.split(','))
+
+        return MonthsYears(months, years)
 
     def parse(self, response):
         row_headers = [
