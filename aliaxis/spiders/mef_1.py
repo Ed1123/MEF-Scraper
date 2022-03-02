@@ -138,13 +138,14 @@ class Mef1Spider(scrapy.Spider):
 
     def start_requests(self):
         months_years = self.get_month_year()
-        urls = get_monthly_report_urls(
+        monthly_report_urls = get_monthly_report_urls(
             self.get_setting('COD_NIVELES_GOBIERNO'),
             self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
             range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
             months_years.months,
             months_years.years,
-        ) + get_pia_pim_urls(
+        )
+        pia_pim_urls = get_pia_pim_urls(
             self.get_setting('COD_NIVELES_GOBIERNO'),
             self.get_setting('COD_CATEGORÍAS_PRESUPUESTALES'),
             range(1, len(self.get_setting('DEPARTAMENTOS')) + 1),
@@ -152,6 +153,10 @@ class Mef1Spider(scrapy.Spider):
         )
         # if os.getenv('TEST_MODE') == 'True':
         #     urls = [Url(mes=1)]
+        urls = monthly_report_urls + pia_pim_urls
+        self.logger.debug(f'Number of monthly report urls: {len(monthly_report_urls)}')
+        self.logger.debug(f'Number of pia/pim urls: {len(pia_pim_urls)}')
+        self.logger.debug(f'Total number of urls: {len(urls)}')
         for url in urls:
             yield scrapy.Request(url=url.get(), meta=url.get_meta())
 
