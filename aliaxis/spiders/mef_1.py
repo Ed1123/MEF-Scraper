@@ -170,7 +170,7 @@ class Mef1Spider(scrapy.Spider):
             'month' not in self.__dict__ or self.month == 'all'
         ):
             # Extract historic data (all months)
-            months = range(1, 12)
+            months = range(1, 12 + 1)
             years = map(int, self.year.split(','))
         elif 'year' not in self.__dict__ and 'month' in self.__dict__:
             # Month in current year if not year provided
