@@ -180,7 +180,7 @@ class Mef1Spider(scrapy.Spider):
             months = map(int, self.month.split(','))
             years = map(int, self.year.split(','))
 
-        return MonthsYears(months, years)
+        return MonthsYears(list(months), list(years))
 
     def parse(self, response):
         row_headers = [
